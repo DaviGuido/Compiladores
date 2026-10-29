@@ -11,6 +11,14 @@ Leiam antes: LINGUAGEM.md secao 2, e CONTRATOS.md secao 2.
 from mplc.erros import ErroMPL
 
 
+def _eh_letra_ascii(c):
+    return 'a' <= c <= 'z' or 'A' <= c <= 'Z'
+
+
+def _eh_digito_ascii(c):
+    return '0' <= c <= '9'
+
+
 PALAVRAS_RESERVADAS = {
     'funcao': 'FUNCAO',
     'retorne': 'RETORNE',
@@ -119,11 +127,11 @@ def analisar(fonte):
 
             continue
 
-        if c.isalpha() or c == '_':
+        if _eh_letra_ascii(c) or c == '_':
             inicio = i
 
             while i < len(fonte) and (
-                fonte[i].isalnum() or fonte[i] == '_'
+                _eh_letra_ascii(fonte[i]) or _eh_digito_ascii(fonte[i]) or fonte[i] == '_'
             ):
                 i += 1
                 coluna += 1
@@ -143,11 +151,11 @@ def analisar(fonte):
 
             continue
 
-        if c.isdigit():
+        if _eh_digito_ascii(c):
 
             inicio = i
 
-            while i < len(fonte) and fonte[i].isdigit():
+            while i < len(fonte) and _eh_digito_ascii(fonte[i]):
                 i += 1
                 coluna += 1
 
@@ -155,7 +163,7 @@ def analisar(fonte):
             if i < len(fonte) and fonte[i] == '.':
 
 
-                if i + 1 >= len(fonte) or not fonte[i + 1].isdigit():
+                if i + 1 >= len(fonte) or not _eh_digito_ascii(fonte[i + 1]):
                     raise ErroMPL(
                         'lexico',
                         linha,
@@ -166,7 +174,7 @@ def analisar(fonte):
                 i += 1
                 coluna += 1
 
-                while i < len(fonte) and fonte[i].isdigit():
+                while i < len(fonte) and _eh_digito_ascii(fonte[i]):
                     i += 1
                     coluna += 1
 
