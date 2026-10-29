@@ -72,7 +72,7 @@ abstrata (AST), seguindo a especificação da linguagem e os rótulos definidos 
 ### Gramática implementada (EBNF)
 
 ```ebnf
-<programa> ::= { <funcao> } EOF
+<programa> ::= { <funcao> } FIM_ARQUIVO
 
 <funcao> ::= FUNCAO <tipo_retorno> ID ABRE_PAR [ <parametros> ] FECHA_PAR <bloco>
 
@@ -140,3 +140,7 @@ abstrata (AST), seguindo a especificação da linguagem e os rótulos definidos 
              | ID
              | <chamada>
              | ABRE_PAR <expressao> FECHA_PAR
+
+## Entrega 3 — Tabela de Símbolos e Verificação de Tipos
+
+A tabela de símbolos é representada por uma lista ordenada de escopos; cada escopo guarda seu número, a descrição, o número do escopo pai e os símbolos declarados nele. Cada símbolo registra nome, categoria, tipo e linha de declaração; funções também guardam a lista de tipos dos parâmetros. Para resolver uma variável, a análise procura primeiro no escopo atual e depois sobe pela cadeia de pais, permitindo sombreamento sem apagar o símbolo externo. A análise semântica usa duas passadas: primeiro registra todas as assinaturas de função, permitindo chamadas anteriores à definição, e depois verifica declarações, usos, tipos, conversões permitidas e retorno garantido.
