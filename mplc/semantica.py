@@ -1,13 +1,3 @@
-"""
-Entrega 3 — analise semantica.
-
-Tabela de simbolos, escopos aninhados e verificacao de tipos.
-
-A tabela e organizada em uma lista de escopos, cada qual com seu pai e seus
-simbolos locais. A resolucao de nomes sobe pela cadeia de pais, permitindo
-sombreamento sem perder o simbolo do escopo externo. A primeira passada coleta
-as assinaturas de todas as funcoes; a segunda verifica corpos, tipos e retornos.
-"""
 from dataclasses import dataclass, field
 
 from mplc.erros import ErroMPL
@@ -137,6 +127,7 @@ class AnalisadorSemantico:
                 tipo_param = parametro.extra['tipo']
                 simbolo = Simbolo(nome_param, 'parametro', tipo_param, parametro.linha)
                 self.adicionar_simbolo(simbolo, parametro)
+                parametro.extra['simbolo'] = simbolo
             garante = self._analisar_bloco(bloco_no)
             if tipo_retorno != 'vazio' and not garante:
                 self.erro(no, f"a funcao '{nome}' pode terminar sem retorne")
@@ -176,6 +167,7 @@ class AnalisadorSemantico:
             simbolo = Simbolo(nome, 'variavel', tipo, no.linha)
             self.escopos[self.atual].simbolos.append(simbolo)
             simbolo.escopo = self.atual
+            no.extra['simbolo'] = simbolo
             return False
 
         if rotulo.startswith('atribuicao '):
@@ -188,6 +180,7 @@ class AnalisadorSemantico:
                 self.erro(no, f"nao e possivel atribuir {tipo_expr} a '{nome}' ({simbolo.tipo})")
             self._marcar_conversao(no.filhos[0], simbolo.tipo, tipo_expr)
             no.extra['tipo_destino'] = simbolo.tipo
+            no.extra['simbolo'] = simbolo
             return False
 
         if rotulo == 'se':
