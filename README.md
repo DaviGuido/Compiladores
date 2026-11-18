@@ -173,4 +173,23 @@ Cada linha do `.mplb` é um objeto JSON com o campo `op`; os campos restantes s�
 | `LOAD` | Busca uma variável no registro de ativação e empilha seu valor. |
 | `STORE` | Desempilha um valor e o grava na variável local indicada. |
 | `CAST_REAL` | Desempilha um número e empilha seu valor convertido para `real`. |
-| `UNARY` | Desempilha um operando, aplica `-` ou `nao`
+| `UNARY` | Desempilha um operando, aplica `-` ou `nao` e empilha o resultado. |
+| `BINARY` | Desempilha o operando direito e depois o esquerdo, aplica um operador binário e empilha o resultado. |
+| `PRINT` | Desempilha um valor e o escreve na saída padrão, formatado conforme seu tipo. |
+| `JZ` | Desempilha uma condição; se ela for falsa, transfere a execução para o rótulo indicado. |
+| `JMP` | Transfere a execução incondicionalmente para o rótulo indicado; não altera a pilha. |
+| `LABEL` | Marca um destino de desvio; não altera a pilha. |
+| `CALL` | Desempilha os argumentos na ordem correta, cria um novo registro de ativação para a função chamada e, se ela retornar valor, empilha o resultado no registro chamador. |
+| `RET` | Encerra a chamada atual; se houver valor de retorno, desempilha-o e o devolve ao chamador. |
+
+### Programa próprio: relatório de números primos
+
+O arquivo `exemplos/relatorio_primos.mpl` verifica os números de 1 a 30, usando uma função auxiliar, laços, condicionais, operações aritméticas e chamadas de função.
+
+A saída esperada está em `exemplos/relatorio_primos.saida`.
+
+### Verificação da Entrega 4
+
+A verificação automatizada da Entrega 4 apresentou o seguinte resultado:
+
+**93 de 93 verificações passaram.**
