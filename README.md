@@ -144,3 +144,31 @@ abstrata (AST), seguindo a especificação da linguagem e os rótulos definidos 
 ## Entrega 3 — Tabela de Símbolos e Verificação de Tipos
 
 A tabela de símbolos é representada por uma lista ordenada de escopos; cada escopo guarda seu número, a descrição, o número do escopo pai e os símbolos declarados nele. Cada símbolo registra nome, categoria, tipo e linha de declaração; funções também guardam a lista de tipos dos parâmetros. Para resolver uma variável, a análise procura primeiro no escopo atual e depois sobe pela cadeia de pais, permitindo sombreamento sem apagar o símbolo externo. A análise semântica usa duas passadas: primeiro registra todas as assinaturas de função, permitindo chamadas anteriores à definição, e depois verifica declarações, usos, tipos, conversões permitidas e retorno garantido.
+
+## Entrega 4 — Código intermediário, geração e máquina virtual
+
+A representação intermediária é código de três endereços: cada expressão composta é decomposta em temporários, com no máximo um operador por linha. O gerador converte essa representação em bytecode textual JSONL (UTF-8), uma instrução legível por linha. A máquina virtual é baseada em pilha e mantém um registro de ativação independente por chamada de função, contendo os parâmetros, as variáveis locais e a pilha de operandos daquela chamada.
+
+### Conjunto de instruções da VM
+
+Cada linha do `.mplb` é um objeto JSON com o campo `op`; os campos restantes são os operandos da instrução. A pilha abaixo é a pilha de operandos do registro de ativação corrente.
+
+- `FUNC`: inicia a definição de uma função e registra seu nome, tipo de retorno e posições dos parâmetros; não altera a pilha.
+- `END`: encerra a definição da função; não altera a pilha.
+- `PUSH`: empilha um literal constante.
+- `DEFAULT`: inicializa uma variável local com o valor padrão do tipo; não altera a pilha.
+- `LOAD`: busca uma variável no registro de ativação e empilha seu valor.
+- `STORE`: desempilha um valor e o grava na variável local indicada.
+- `CAST_REAL`: desempilha um número e empilha seu valor convertido para `real`.
+- `UNARY`: desempilha um operando, aplica `-` ou `nao` e empilha o resultado.
+- `BINARY`: desempilha o operando direito e depois o esquerdo, aplica um operador binário e empilha o resultado.
+- `PRINT`: desempilha um valor e o escreve na saída padrão, formatado conforme seu tipo.
+- `JZ`: desempilha uma condição; se ela for falsa, transfere a execução para o rótulo indicado.
+- `JMP`: transfere a execução incondicionalmente para o rótulo indicado; não altera a pilha.
+- `LABEL`: marca um destino de desvio; não altera a pilha.
+- `CALL`: desempilha os argumentos na ordem correta, cria um novo registro de ativação para a função chamada e, se ela retornar valor, empilha o resultado no registro chamador.
+- `RET`: encerra a chamada atual; se houver valor de retorno, desempilha-o e o devolve ao chamador.
+
+### Programa próprio: relatório de números primos
+
+O arquivo `exemplos/relatorio_primos.mpl` verifica os números de 1 a 30, usando uma função auxiliar, laços, condicionais, operações aritméticas e chamadas de função. A saída esperada está em `exemplos/relatorio_primos.saida`.
